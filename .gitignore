@@ -6,6 +6,7 @@ uploads/storage/*.sqlite
 # Addons & Private Projects
 app/addons/*
 license_server_project/
+*.zip
 
 # User Generated Content (Keep the folders, ignore the files)
 uploads/photos/*

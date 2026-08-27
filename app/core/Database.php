@@ -18,6 +18,12 @@ class Database {
                 created_at INTEGER
             )');
             
+            // Auto-migrate new columns for older SQLite databases
+            $cols = ['name' => 'TEXT', 'phone' => 'TEXT', 'address' => 'TEXT', 'country' => 'TEXT', 'zipcode' => 'TEXT', 'is_verified' => 'INTEGER DEFAULT 0', 'verification_token' => 'TEXT'];
+            foreach ($cols as $c => $t) {
+                try { self::$pdo->exec("ALTER TABLE users ADD COLUMN $c $t"); } catch (\Exception $e) {}
+            }
+            
             self::$pdo->exec('CREATE TABLE IF NOT EXISTS resumes (
                 id TEXT PRIMARY KEY, 
                 user_id INTEGER, 
@@ -84,7 +90,11 @@ class Database {
             'theme' => self::themeDefaults()];
     }
     public static function draft(): array {
-        $id = $_GET['id'] ?? Session::draftId();
+        Session::start();
+        if (isset($_GET['id'])) {
+            $_SESSION['rf_draft'] = $_GET['id'];
+        }
+        $id = $_SESSION['rf_draft'] ?? Session::draftId();
         $d = self::load($id);
         if (!$d) { $d = self::defaults(); self::save($id, $d); }
         $d['theme'] = array_merge(self::themeDefaults(), $d['theme'] ?? []);

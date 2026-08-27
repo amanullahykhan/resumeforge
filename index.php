@@ -15,7 +15,7 @@ $fonts = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display', 'Space Grotesk'
 <body>
 <div class="top"><div class="brand">Resume<b>Forge</b></div><span style="font-size:11px;background:#1e293b;padding:3px 9px;border-radius:99px">PRO · AI</span>
 <div class="spacer"></div><span id="saved">✓ Saved</span>
-<a class="btn primary" href="builder.php">Open Visual Builder →</a></div>
+<a class="btn primary" href="builder.php?id=<?= $e($_GET['id'] ?? \App\Core\Session::draftId()) ?>">Open Visual Builder →</a></div>
 <div class="wrap" id="wizard" data-step="<?= $step ?>">
 <div class="pills">
  <?php foreach ([1 => '1 · Profile & Import', 2 => '2 · Experience', 3 => '3 · Skills & More', 4 => '4 · Design'] as $n => $l): ?>
@@ -121,7 +121,7 @@ $fonts = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display', 'Space Grotesk'
    <div><label class="f">Frame border</label><select data-t="frame_border"><?php foreach (['ring' => 'Ring', 'solid' => 'Solid', 'none' => 'None'] as $v => $l) echo "<option value=$v" . ($v === $t['frame_border'] ? ' selected' : '') . ">$l</option>"; ?></select></div>
    <div><label class="f">Uppercase headings</label><select data-t="upper"><option value="1"<?= $t['upper'] ? ' selected' : '' ?>>Yes</option><option value="0"<?= !$t['upper'] ? ' selected' : '' ?>>No</option></select></div>
   </div>
-  <div class="btnrow"><a class="btn primary" href="builder.php">Open Visual Builder →</a></div></div>
+  <div class="btnrow"><a class="btn primary" href="builder.php?id=<?= $e($_GET['id'] ?? \App\Core\Session::draftId()) ?>">Open Visual Builder →</a></div></div>
 </div>
 </div>
 

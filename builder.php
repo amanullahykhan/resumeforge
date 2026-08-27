@@ -14,7 +14,7 @@ $fonts = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display', 'Space Grotesk'
 <body>
 <div class="top"><div class="brand">Resume<b>Forge</b></div><span style="font-size:11px;background:#1e293b;padding:3px 9px;border-radius:99px">BUILDER</span>
  <div class="spacer"></div><span id="saved">✓ Saved</span>
- <a class="btn" href="index.php">← Wizard (content)</a></div>
+ <a class="btn" href="index.php?id=<?= $e($_GET['id'] ?? \App\Core\Session::draftId()) ?>">← Wizard (content)</a></div>
 <div class="builder">
  <div class="left">
   <div class="card"><h2>Template</h2><div class="tpl-grid" style="grid-template-columns:repeat(2,1fr)">

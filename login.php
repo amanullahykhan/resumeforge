@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/app/bootstrap.php';
-use App\Core\Auth;
+use App\Core\{Auth, Database};
 
 if (Auth::check()) {
     header('Location: dashboard.php');
@@ -8,14 +8,30 @@ if (Auth::check()) {
 }
 
 $error = '';
+$success = '';
+
+if (isset($_GET['verify'])) {
+    $token = trim($_GET['verify']);
+    $pdo = Database::pdo();
+    $st = $pdo->prepare('UPDATE users SET is_verified = 1 WHERE verification_token = ? AND is_verified = 0');
+    $st->execute([$token]);
+    if ($st->rowCount() > 0) {
+        $success = 'Email verified successfully! You can now sign in.';
+    } else {
+        $error = 'Invalid or already used verification link.';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $pass = $_POST['password'] ?? '';
-    if (Auth::login($email, $pass)) {
+    
+    $res = Auth::login($email, $pass);
+    if ($res['ok']) {
         header('Location: dashboard.php');
         exit;
     } else {
-        $error = 'Invalid email or password.';
+        $error = $res['error'] ?? 'Invalid email or password.';
     }
 }
 ?>
@@ -42,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="auth-card">
         <h1>Welcome Back</h1>
         <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <?php if ($success): ?><div class="success" style="color:#047857;background:#d1fae5;padding:10px;border-radius:6px;margin-bottom:20px;font-size:14px;"><?= htmlspecialchars($success) ?></div><?php endif; ?>
         <form method="POST" action="login.php">
             <div class="form-group">
                 <label>Email Address</label>

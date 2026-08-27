@@ -32,7 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'new_resume') {
         $id = bin2hex(random_bytes(8));
         $title = trim($_POST['title'] ?? 'Untitled Resume');
-        $data = json_encode(Database::defaults());
+        
+        $defaults = Database::defaults();
+        $defaults['profile']['name'] = $user['name'] ?? '';
+        $defaults['profile']['email'] = $user['email'] ?? '';
+        $defaults['profile']['phone'] = $user['phone'] ?? '';
+        
+        $locParts = [];
+        if (!empty($user['address'])) $locParts[] = trim($user['address']);
+        if (!empty($user['zipcode'])) $locParts[] = trim($user['zipcode']);
+        if (!empty($user['country'])) $locParts[] = trim($user['country']);
+        $defaults['profile']['location'] = implode(', ', $locParts);
+        
+        $data = json_encode($defaults);
         
         $st = $pdo->prepare('INSERT INTO resumes (id, user_id, title, data, updated_at) VALUES (?, ?, ?, ?, ?)');
         $st->execute([$id, $user['id'], $title, $data, time()]);

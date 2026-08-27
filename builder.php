@@ -12,9 +12,14 @@ $fonts = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display', 'Space Grotesk'
 <title>ResumeForge — Builder</title><link rel="stylesheet" href="assets/css/app.css">
 <script>window.RF_IS_PRO = <?= \App\Core\Auth::user()['is_pro'] ? 'true' : 'false' ?>;</script></head>
 <body>
-<div class="top"><div class="brand">Resume<b>Forge</b></div><span style="font-size:11px;background:#1e293b;padding:3px 9px;border-radius:99px">BUILDER</span>
- <div class="spacer"></div><span id="saved">✓ Saved</span>
- <a class="btn" href="index.php?id=<?= $e($_GET['id'] ?? \App\Core\Session::draftId()) ?>">← Wizard (content)</a></div>
+<div class="top">
+ <a class="btn" href="dashboard.php" style="margin-right:12px; border-color:transparent">← Dashboard</a>
+ <div class="brand">Resume<b>Forge</b></div><span style="font-size:11px;background:#1e293b;padding:3px 9px;border-radius:99px">BUILDER</span>
+ <div class="spacer"></div>
+ <span id="saved">✓ Saved</span>
+ <a class="btn" href="index.php?id=<?= $e($_GET['id'] ?? \App\Core\Session::draftId()) ?>" style="margin-right: 12px;">← Edit Content</a>
+ <a class="btn" href="logout.php" style="border-color:transparent; color:#ef4444">Logout</a>
+</div>
 <div class="builder">
  <div class="left">
   <div class="card"><h2>Template</h2><div class="tpl-grid" style="grid-template-columns:repeat(2,1fr)">

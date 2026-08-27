@@ -1,6 +1,8 @@
 *{box-sizing:border-box}
 body.rf-preview{margin:0;padding:24px;background:#64748b}
-.sheet{width:794px;min-height:1122px;margin:0 auto;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.4);overflow-wrap:break-word}
+.sheet{margin:0 auto;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.4);overflow-wrap:break-word}
+.sheet.paper-a4{width:794px;min-height:1122px;}
+.sheet.paper-letter{width:816px;min-height:1056px;}
 .sheet .photo{width:104px;height:104px;overflow:hidden}
 .sheet .photo img{width:100%;height:100%;object-fit:cover;display:block}
 .sheet .c-item svg{width:11px;height:11px;vertical-align:-1px;margin-right:6px}

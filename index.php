@@ -103,10 +103,17 @@ $fonts = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display', 'Space Grotesk'
   <?php endforeach; ?></div></div>
  <div class="card"><h2>Theme & typography</h2>
   <div class="grid">
+   <div class="full"><h3>Spacing & Layout</h3></div>
+   <div><label class="f">Paper size</label><select data-t="paper_size"><option value="a4"<?= ($t['paper_size'] ?? 'a4') === 'a4' ? ' selected' : '' ?>>A4 (International)</option><option value="letter"<?= ($t['paper_size'] ?? '') === 'letter' ? ' selected' : '' ?>>US Letter</option></select></div>
+   <div><label class="f">Page padding (<?= (int)($t['page_padding'] ?? 24) ?>px)</label><input type="range" min="12" max="40" data-t="page_padding" value="<?= (int)($t['page_padding'] ?? 24) ?>"></div>
+   <div><label class="f">Section spacing (<?= (int)($t['spacing_section'] ?? 14) ?>px)</label><input type="range" min="6" max="28" data-t="spacing_section" value="<?= (int)($t['spacing_section'] ?? 14) ?>"></div>
+   <div><label class="f">Item gap (<?= (int)($t['spacing_item'] ?? 8) ?>px)</label><input type="range" min="2" max="16" data-t="spacing_item" value="<?= (int)($t['spacing_item'] ?? 8) ?>"></div>
+   <div><label class="f">Line height</label><input type="range" min="1.2" max="1.8" step="0.05" data-t="line_height" value="<?= (float)($t['line_height'] ?? 1.45) ?>"></div>
+   <div><label class="f">Base font size (<?= (int)$t['size'] ?>px)</label><input type="range" min="11" max="16" data-t="size" value="<?= (int)$t['size'] ?>"></div>
+   <div class="full"><h3>Colors & Style</h3></div>
    <div><label class="f">Accent color</label><input type="color" data-t="accent" value="<?= $e($t['accent']) ?>"></div>
    <div><label class="f">Sidebar color</label><input type="color" data-t="sidebar" value="<?= $e($t['sidebar']) ?>"></div>
    <div><label class="f">Sidebar text</label><input type="color" data-t="side_text" value="<?= $e($t['side_text']) ?>"></div>
-   <div><label class="f">Base size (<?= (int)$t['size'] ?>px)</label><input type="range" min="11" max="16" data-t="size" value="<?= (int)$t['size'] ?>"></div>
    <div><label class="f">Font</label><select data-t="font"><?php foreach ($fonts as $f) echo '<option' . ($f === $t['font'] ? ' selected' : '') . ">$f</option>"; ?></select></div>
    <div><label class="f">Heading style</label><select data-t="heading"><?php foreach (['bar' => 'Accent bar', 'underline' => 'Underline', 'pill' => 'Pill', 'line' => 'Rule line', 'box' => 'Box', 'plain' => 'Plain'] as $v => $l) echo "<option value=$v" . ($v === $t['heading'] ? ' selected' : '') . ">$l</option>"; ?></select></div>
    <div><label class="f">Skill display</label><select data-t="skill_style"><?php foreach (['bars' => 'Bars', 'tags' => 'Tags', 'dots' => 'Dots', 'list' => 'List'] as $v => $l) echo "<option value=$v" . ($v === $t['skill_style'] ? ' selected' : '') . ">$l</option>"; ?></select></div>

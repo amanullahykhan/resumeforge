@@ -3,12 +3,12 @@ use App\Templates\Tpl;
 return ['id' => 'creative', 'name' => 'Creative', 'desc' => 'Bold left accent bar and colored headings',
 'thumb' => '<svg viewBox="0 0 60 80"><rect width="60" height="80" fill="#fff"/><rect width="4" height="80" fill="#4f46e5"/><circle cx="16" cy="14" r="6" fill="#cbd5e1"/><rect x="26" y="10" width="24" height="3.5" fill="#1e293b"/><rect x="26" y="16" width="16" height="2" fill="#64748b"/><rect x="10" y="26" width="12" height="2" fill="#4f46e5"/><rect x="10" y="30" width="40" height="2" fill="#94a3b8"/><rect x="10" y="34" width="40" height="2" fill="#94a3b8"/><rect x="10" y="42" width="12" height="2" fill="#4f46e5"/><rect x="10" y="46" width="40" height="2" fill="#94a3b8"/></svg>',
 'render' => function (array $d): string {
-    $t = $d['theme']; $p = $d['profile'];
+    $t = $d['theme']; $p = $d['profile']; $pad = (int)($t['page_padding'] ?? 24);
     $acc = $t['accent'];
     return Tpl::sheetOpen($d)
     . '<div style="display:flex;min-height:100%">'
     . '<div style="width:16px;background:' . $acc . ';flex-shrink:0"></div>'
-    . '<div style="flex-grow:1;padding:30px 40px">'
+    . '<div style="flex-grow:1;padding:' . ($pad + 6) . 'px ' . ($pad + 16) . 'px">'
     . '<table style="width:100%;margin-bottom:24px"><tr>'
     . '<td style="width:80px;vertical-align:top">' . Tpl::photo($d, false) . '</td>'
     . '<td style="padding-left:20px;vertical-align:middle">'

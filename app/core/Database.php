@@ -72,7 +72,9 @@ class Database {
     public static function themeDefaults(): array {
         return ['template' => 'modern', 'accent' => '#4f46e5', 'sidebar' => '#0f172a', 'side_text' => '#e2e8f0',
             'size' => 13, 'font' => 'Inter', 'heading' => 'bar', 'skill_style' => 'bars',
-            'frame' => 'circle', 'frame_border' => 'ring', 'upper' => true];
+            'frame' => 'circle', 'frame_border' => 'ring', 'upper' => true,
+            'spacing_section' => 14, 'spacing_item' => 8, 'line_height' => 1.45,
+            'page_padding' => 24, 'paper_size' => 'a4'];
     }
     public static function defaults(): array {
         return ['step' => 1,

@@ -24,7 +24,8 @@ class Tpl {
     }
     public static function sheetOpen(array $d): string {
         $t = $d['theme'];
-        return '<div class="sheet" style="font-family:' . self::font($t['font']) . ';font-size:' . (int)$t['size'] . 'px;line-height:1.45;color:#1f2937">';
+        $paper = ($t['paper_size'] ?? 'a4') === 'letter' ? 'paper-letter' : 'paper-a4';
+        return '<div class="sheet ' . $paper . '" style="font-family:' . self::font($t['font']) . ';font-size:' . (int)$t['size'] . 'px;line-height:' . ($t['line_height'] ?? 1.45) . ';color:#1f2937">';
     }
     public static function secH(array $d, string $text, bool $side = false): string {
         $t = $d['theme']; $a = $t['accent']; $col = $side ? $t['side_text'] : '#1f2937';
@@ -38,7 +39,7 @@ class Tpl {
             case 'plain': $s = ''; $col = $a; break;
             default: $s = "border-left:4px solid $a;padding-left:8px;";
         }
-        return '<h3 class="sec-h" style="font-size:' . $sz . 'px;color:' . $col . ';margin:0 0 10px;' . $up . $s . '">' . self::e($text) . '</h3>';
+        return '<h3 class="sec-h" style="font-size:' . $sz . 'px;color:' . $col . ';margin:0 0 ' . ((int)($t['spacing_item'] ?? 8)) . 'px;' . $up . $s . '">' . self::e($text) . '</h3>';
     }
         public static function photo(array $d, bool $center = false): string {
         $p = $d['profile']; if (empty($p['photo'])) return '';
@@ -65,67 +66,76 @@ class Tpl {
         foreach (['email' => 'email', 'phone' => 'phone', 'location' => 'pin', 'website' => 'globe', 'linkedin' => 'linkedin', 'github' => 'github'] as $k => $ic)
             if (!empty($p[$k])) $rows[] = '<span class="c-item" style="display:' . ($mode === 'row' ? 'inline-block;margin-right:14px' : 'block') . ';margin-bottom:4px;font-size:' . ((int)$d['theme']['size'] - 1) . 'px">' . self::ICONS[$ic] . '<span>' . self::e($p[$k]) . '</span></span>';
         if (!$rows) return '';
-        return '<div style="color:' . ($side ? $d['theme']['side_text'] : '#374151') . ';margin-bottom:14px">' . implode('', $rows) . '</div>';
+        return '<div style="color:' . ($side ? $d['theme']['side_text'] : '#374151') . ';margin-bottom:' . ((int)($d['theme']['spacing_section'] ?? 14)) . 'px">' . implode('', $rows) . '</div>';
     }
     public static function summary(array $d): string {
         $s = trim($d['profile']['summary'] ?? ''); if ($s === '') return '';
-        return '<div style="margin-bottom:12px">' . self::secH($d, 'Professional Summary') . '<p style="margin:0">' . self::e($s) . '</p></div>';
+        return '<div style="margin-bottom:' . ((int)($d['theme']['spacing_section'] ?? 14)) . 'px">' . self::secH($d, 'Professional Summary') . '<p style="margin:0">' . self::e($s) . '</p></div>';
     }
     public static function experience(array $d, bool $side = false): string {
         $jobs = array_filter($d['experience'] ?? [], fn($j) => trim(($j['title'] ?? '') . ($j['company'] ?? '')) !== '');
         if (!$jobs) return '';
-        $a = $d['theme']['accent']; $b = '';
+        $t = $d['theme']; $a = $t['accent']; $b = '';
+        $sSec = (int)($t['spacing_section'] ?? 14);
+        $sItm = (int)($t['spacing_item'] ?? 8);
         foreach ($jobs as $j) {
-            if ($side) { $b .= '<div style="margin-bottom:8px"><div style="font-weight:700">' . self::e($j['title']) . '</div><div style="font-size:12px">' . self::e($j['company']) . '</div><div style="font-size:11px;opacity:.75">' . self::e($j['date']) . '</div></div>'; continue; }
+            if ($side) { $b .= '<div style="margin-bottom:' . $sItm . 'px"><div style="font-weight:700">' . self::e($j['title']) . '</div><div style="font-size:12px">' . self::e($j['company']) . '</div><div style="font-size:11px;opacity:.75">' . self::e($j['date']) . '</div></div>'; continue; }
             $bul = '';
             foreach (preg_split('/\n+/', $j['bullets'] ?? '') as $bl) if (trim($bl) !== '') $bul .= '<li style="margin:1px 0">' . self::e(trim($bl)) . '</li>';
-            $b .= '<div style="margin-bottom:8px;overflow:hidden"><div style="font-weight:700">' . self::e($j['title'])
+            $b .= '<div style="margin-bottom:' . $sItm . 'px;overflow:hidden"><div style="font-weight:700">' . self::e($j['title'])
                 . '<span style="float:right;font-weight:400;font-size:11px;color:#6b7280">' . self::e($j['date']) . '</span></div>'
-                . (trim(($j['company'] ?? '') . ($j['location'] ?? '')) !== '' ? '<div style="color:' . $a . ';font-weight:600;font-size:' . ((int)$d['theme']['size'] - 1) . 'px">' . self::e($j['company']) . ($j['location'] ? ' · ' . self::e($j['location']) : '') . '</div>' : '')
+                . (trim(($j['company'] ?? '') . ($j['location'] ?? '')) !== '' ? '<div style="color:' . $a . ';font-weight:600;font-size:' . ((int)$t['size'] - 1) . 'px">' . self::e($j['company']) . ($j['location'] ? ' · ' . self::e($j['location']) : '') . '</div>' : '')
                 . ($bul !== '' ? '<ul style="margin:3px 0 0;padding-left:14px">' . $bul . '</ul>' : '') . '</div>';
         }
-        return '<div style="margin-bottom:12px">' . self::secH($d, 'Experience', $side) . $b . '</div>';
+        return '<div style="margin-bottom:' . $sSec . 'px">' . self::secH($d, 'Experience', $side) . $b . '</div>';
     }
     public static function education(array $d, bool $side = false): string {
         $items = array_filter($d['education'] ?? [], fn($x) => trim(($x['degree'] ?? '') . ($x['school'] ?? '')) !== '');
         if (!$items) return '';
+        $sSec = (int)($d['theme']['spacing_section'] ?? 14);
+        $sItm = (int)($d['theme']['spacing_item'] ?? 8);
         $b = '';
-        foreach ($items as $x) $b .= '<div style="margin-bottom:7px;overflow:hidden"><div style="font-weight:700">' . self::e($x['degree'])
+        foreach ($items as $x) $b .= '<div style="margin-bottom:' . $sItm . 'px;overflow:hidden"><div style="font-weight:700">' . self::e($x['degree'])
             . '<span style="float:right;font-weight:400;font-size:11px;color:#6b7280">' . self::e($x['date']) . '</span></div>'
             . '<div style="color:' . $d['theme']['accent'] . ';font-size:' . ((int)$d['theme']['size'] - 1) . 'px">' . self::e($x['school']) . '</div>'
             . ($x['note'] ? '<div style="font-size:11px;color:#6b7280">' . self::e($x['note']) . '</div>' : '') . '</div>';
-        return '<div style="margin-bottom:12px">' . self::secH($d, 'Education', $side) . $b . '</div>';
+        return '<div style="margin-bottom:' . $sSec . 'px">' . self::secH($d, 'Education', $side) . $b . '</div>';
     }
     public static function skills(array $d, bool $side = false): string {
         $items = array_filter($d['skills'] ?? [], fn($s) => trim($s['name'] ?? '') !== '');
         if (!$items) return '';
         $t = $d['theme']; $a = $t['accent']; $b = '';
+        $sSec = (int)($t['spacing_section'] ?? 14);
+        $sItm = (int)($t['spacing_item'] ?? 8);
         if ($t['skill_style'] === 'tags') {
             foreach ($items as $s) $b .= '<span style="display:inline-block;border:1px solid ' . ($side ? 'rgba(255,255,255,.5)' : $a) . ';border-radius:99px;padding:2px 8px;font-size:10.5px;margin:0 3px 4px 0">' . self::e($s['name']) . '</span>';
         } elseif ($t['skill_style'] === 'dots') {
             foreach ($items as $s) { $f = (int)round(((int)($s['level'] ?? 80)) / 20);
-                $b .= '<div style="margin-bottom:5px;overflow:hidden">' . self::e($s['name']) . '<span style="float:right">' . implode('', array_map(fn($i) => '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:3px;background:' . ($i <= $f ? $a : ($side ? 'rgba(255,255,255,.3)' : '#e5e7eb')) . '"></span>', [1, 2, 3, 4, 5])) . '</span></div>'; }
+                $b .= '<div style="margin-bottom:' . max(2, $sItm-3) . 'px;overflow:hidden">' . self::e($s['name']) . '<span style="float:right">' . implode('', array_map(fn($i) => '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:3px;background:' . ($i <= $f ? $a : ($side ? 'rgba(255,255,255,.3)' : '#e5e7eb')) . '"></span>', [1, 2, 3, 4, 5])) . '</span></div>'; }
         } elseif ($t['skill_style'] === 'list') {
             $b = '<ul style="margin:0;padding-left:14px">' . implode('', array_map(fn($s) => '<li style="margin:1px 0">' . self::e($s['name']) . '</li>', $items)) . '</ul>';
         } else {
-            foreach ($items as $s) $b .= '<div style="margin-bottom:5px"><div style="font-size:' . ((int)$t['size'] - 1) . 'px">' . self::e($s['name']) . ($side ? '' : ' <span style="float:right;color:#9ca3af;font-size:10px">' . (int)$s['level'] . '%</span>') . '</div><div style="height:4px;background:' . ($side ? 'rgba(255,255,255,.25)' : '#e5e7eb') . ';border-radius:2px;margin-top:2px"><div style="height:4px;width:' . (int)($s['level'] ?? 80) . '%;background:' . $a . ';border-radius:2px"></div></div></div>';
+            foreach ($items as $s) $b .= '<div style="margin-bottom:' . max(2, $sItm-3) . 'px"><div style="font-size:' . ((int)$t['size'] - 1) . 'px">' . self::e($s['name']) . ($side ? '' : ' <span style="float:right;color:#9ca3af;font-size:10px">' . (int)$s['level'] . '%</span>') . '</div><div style="height:4px;background:' . ($side ? 'rgba(255,255,255,.25)' : '#e5e7eb') . ';border-radius:2px;margin-top:2px"><div style="height:4px;width:' . (int)($s['level'] ?? 80) . '%;background:' . $a . ';border-radius:2px"></div></div></div>';
         }
-        return '<div style="margin-bottom:12px">' . self::secH($d, 'Skills', $side) . $b . '</div>';
+        return '<div style="margin-bottom:' . $sSec . 'px">' . self::secH($d, 'Skills', $side) . $b . '</div>';
     }
     public static function languages(array $d, bool $side = false): string {
         $items = array_filter($d['languages'] ?? [], fn($x) => trim($x['name'] ?? '') !== '');
         if (!$items) return '';
+        $sSec = (int)($d['theme']['spacing_section'] ?? 14);
+        $sItm = (int)($d['theme']['spacing_item'] ?? 8);
         $b = '';
-        foreach ($items as $x) $b .= '<div style="margin-bottom:4px;overflow:hidden"><b>' . self::e($x['name']) . '</b><span style="float:right;font-size:' . ((int)$d['theme']['size'] - 2) . 'px;opacity:.8">' . self::e($x['level']) . '</span></div>';
-        return '<div style="margin-bottom:12px">' . self::secH($d, 'Languages', $side) . $b . '</div>';
+        foreach ($items as $x) $b .= '<div style="margin-bottom:' . max(2, $sItm-4) . 'px;overflow:hidden"><b>' . self::e($x['name']) . '</b><span style="float:right;font-size:' . ((int)$d['theme']['size'] - 2) . 'px;opacity:.8">' . self::e($x['level']) . '</span></div>';
+        return '<div style="margin-bottom:' . $sSec . 'px">' . self::secH($d, 'Languages', $side) . $b . '</div>';
     }
     public static function custom(array $d, string $place, bool $side = false): string {
         $out = '';
+        $sSec = (int)($d['theme']['spacing_section'] ?? 14);
         foreach ($d['custom'] ?? [] as $c) {
             if (($c['place'] ?? 'main') !== $place || trim($c['heading'] ?? '') === '') continue;
             $lines = array_filter(array_map('trim', preg_split('/\n+/', $c['lines'] ?? '')), 'strlen');
             if (!$lines) continue;
-            $out .= '<div style="margin-bottom:12px">' . self::secH($d, $c['heading'], $side)
+            $out .= '<div style="margin-bottom:' . $sSec . 'px">' . self::secH($d, $c['heading'], $side)
                 . implode('', array_map(fn($l) => '<div style="margin-bottom:3px">' . self::e($l) . '</div>', $lines)) . '</div>';
         }
         return $out;

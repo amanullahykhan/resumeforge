@@ -65,9 +65,10 @@ CSS;
                 @mkdir($tmpDir, 0775, true);
             }
 
+            $paper = strtoupper($d['theme']['paper_size'] ?? 'A4');
             $mpdf = new \Mpdf\Mpdf([
                 'mode'             => 'utf-8',
-                'format'           => 'A4',
+                'format'           => $paper,
                 'orientation'      => 'P',
                 'margin_left'      => 0,
                 'margin_right'     => 0,

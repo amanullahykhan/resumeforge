@@ -1,0 +1,12 @@
+*{box-sizing:border-box}
+body.rf-preview{margin:0;padding:24px;background:#64748b}
+.sheet{width:794px;min-height:1122px;margin:0 auto;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.4);overflow-wrap:break-word}
+.sheet .photo{width:104px;height:104px;overflow:hidden}
+.sheet .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.sheet .c-item svg{width:11px;height:11px;vertical-align:-1px;margin-right:6px}
+.sheet h1,.sheet h3{font-family:inherit}
+@media print{
+  @page{margin:0}
+  body.rf-preview{background:#fff;padding:0;margin:0}
+  .sheet{box-shadow:none;width:100%;min-height:0;margin:0;padding:0}
+}

@@ -1,0 +1,22 @@
+# Secrets & Config
+app/config/.env
+uploads/storage/*.json
+uploads/storage/*.sqlite
+
+# Addons (Pro Features)
+app/addons/*
+
+# User Generated Content (Keep the folders, ignore the files)
+uploads/photos/*
+uploads/exports/*
+!uploads/photos/.gitkeep
+!uploads/exports/.gitkeep
+!uploads/storage/.gitkeep
+
+# Dependencies
+/vendor/
+composer.phar
+
+# OS Files
+.DS_Store
+Thumbs.db
